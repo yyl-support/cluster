@@ -1,0 +1,11 @@
+export CP_runs_on="arm64"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11"
+export CP_pipeline_run_id="test-dataset-readonly-38"
+export CP_merge_id="38"
+export CP_repo_url="https://github.com/testorg/testrepo-test16.git"
+export JOB_ID="job-38"
+export BUILDNUMBER="456"
+export CP_dataset="/dataset,readonly"
+export CP_timestamp="1038"
+
+export CP_image_proxy="swr.cn-southwest-2.myhuaweicloud.com"

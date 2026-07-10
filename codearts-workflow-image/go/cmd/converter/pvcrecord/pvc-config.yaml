@@ -1,0 +1,117 @@
+# PVC Configuration Record
+# Each PVC is labeled with the cluster context it belongs to
+# Format: pvc_name, storage_size, storage_class_name, namespace, context
+
+contexts:
+  - name: external-gy-001
+    cluster: externalCluster-gy-001
+  - name: external-gy-006
+    cluster: externalCluster-gy-006
+  - name: external-wlcb-001
+    cluster: externalCluster-wlcb-001
+
+pvc_records:
+  # guiyang-006 cluster PVCs
+  - name: testorg-testrepo-test15
+    storage: 1Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: argo
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-006
+
+  - name: testorg-testrepo-test15
+    storage: 1Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: ragsdk
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-006
+
+  - name: testorg-testrepo-test15
+    storage: 1Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: ragsdk
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001
+
+  - name: ascend-ascendnpu-ir
+    storage: 8Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: argo
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-006
+
+  - name: ascend-ascendnpu-ir
+    storage: 8Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: argo
+    accessModes:
+      - ReadWriteMany
+    context: external-wlcb-001
+
+  - name: ascend-archive-ascendnpu-ir
+    storage: 1Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: argo
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-006
+
+  - name: ascend-op-plugin
+    storage: 100Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: op-plugin
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001    
+
+  - name: ascend-ragsdk
+    storage: 200Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: ragsdk
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001   
+
+  - name: mindie-llm-log
+    storage: 10Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: argo
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001   
+
+  - name: mindie-llm-log
+    storage: 10Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: argo
+    accessModes:
+      - ReadWriteMany
+    context: external-wlcb-001   
+
+  - name: ascend-recsdk
+    storage: 100Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: recsdk
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001   
+
+  - name: ascend-multimodalsdk
+    storage: 32Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: multimodalsdk
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001
+
+  - name: ascend-indexsdk
+    storage: 5Gi
+    storageClassName: sfsturbo-subpath-sc
+    namespace: indexsdk
+    accessModes:
+      - ReadWriteMany
+    context: external-gy-001   

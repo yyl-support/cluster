@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+    generateName: workflow-script-
+    labels:
+        pipeline/run-id: test-simple-123
+spec:
+    templates:
+        - name: main-script
+          metadata: {}
+          script:
+            name: ascend
+            image: swr.cn-southwest-2.myhuaweicloud.com/modelfoundry/git:latest
+            command:
+                - sh
+            source: |
+                #!/bin/bash
+                echo "Hello from test script"
+                echo "Current directory: $(pwd)"
+                ls -la
+            resources:
+                limits:
+                    cpu: "8"
+                    memory: 8Gi
+                requests:
+                    cpu: "2"
+                    memory: 8Gi
+            volumeMounts:
+                - name: workspace
+                  mountPath: /workspace
+                - name: driver-tools
+                  mountPath: /usr/local/Ascend/driver/tools
+                  readOnly: true
+            workingDir: /workspace
+            env:
+                - name: WORKSPACE
+                  value: /workspace
+          nodeSelector:
+            kubernetes.io/arch: amd64
+    entrypoint: main-script
+    arguments: {}
+    volumes:
+        - name: driver-tools
+          hostPath:
+            path: /usr/local/Ascend/driver/tools
+    volumeClaimTemplates:
+        - metadata:
+            name: workspace
+          spec:
+            accessModes:
+                - ReadWriteMany
+            resources:
+                requests:
+                    storage: 1Gi
+            storageClassName: sfsturbo-subpath-sc
+          status: {}
+    imagePullSecrets:
+        - name: huawei-swr-image-pull-secret-model-gy
+    schedulerName: volcano
+    artifactRepositoryRef:
+        configMap: workflow-artifact-repository
+        key: artifact-repository
+    activeDeadlineSeconds: 14400
+    securityContext:
+        runAsUser: 0

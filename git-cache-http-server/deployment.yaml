@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: git-cache-http-server
+  labels:
+    app: git-cache-http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: git-cache-http-server
+  template:
+    metadata:
+      labels:
+        app: git-cache-http-server
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+        - name: git-cache-http-server
+          image: git-cache-http-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: cache
+              mountPath: /var/cache/git
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: cache
+          emptyDir: {}

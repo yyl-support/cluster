@@ -1,0 +1,17 @@
+apiVersion: policy.karmada.io/v1alpha1
+kind: ClusterPropagationPolicy
+metadata:
+  labels:
+    resourcetemplate.karmada.io/deletion-protected: Always
+  name: volcano-global-all-queue-propagation
+spec:
+  conflictResolution: Overwrite
+  placement:
+    replicaScheduling:
+      replicaSchedulingType: Duplicated
+  preemption: Never
+  priority: 0
+  resourceSelectors:
+  - apiVersion: scheduling.volcano.sh/v1beta1
+    kind: Queue
+  schedulerName: default-scheduler

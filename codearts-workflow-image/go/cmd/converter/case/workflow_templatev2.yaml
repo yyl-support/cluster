@@ -1,0 +1,43 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    labels: {}
+spec:
+    ttlSecondsAfterFinished: 1800
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: large-task-shared-queue
+    maxRetry: 1
+    minAvailable: 1
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+              metadata: {}
+              spec:
+                  containers:
+                      - name: ascend
+                        image: ""
+                        command:
+                            - bash
+                            - -c
+                        args:
+                            - ""
+                        workingDir: /workspace
+                        env:
+                            - name: WORKSPACE
+                              value: /workspace
+                            - name: workspace
+                              value: /workspace
+                            - name: GOPROXY
+                              value: "http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct"
+                            - name: GOSUMDB
+                              value: "sum.golang.google.cn"
+                  imagePullSecrets:
+                      - name: huawei-swr-image-pull-secret-model-gy
+                  activeDeadlineSeconds: 14400
+                  securityContext:
+                      runAsUser: 0
+                  restartPolicy: Never

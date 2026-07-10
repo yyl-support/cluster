@@ -1,0 +1,27 @@
+apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: volcano-global-dispatch-policy
+  namespace: default
+spec:
+  conflictResolution: Abort
+  placement:
+    replicaScheduling:
+      replicaDivisionPreference: Aggregated
+      replicaSchedulingType: Divided
+  preemption: Never
+  priority: 0
+  resourceSelectors:
+  - apiVersion: batch/v1
+    kind: Job
+    labelSelector:
+      matchLabels:
+        volcano-global.io/dispatch: 'true'
+    namespace: default
+  - apiVersion: batch.volcano.sh/v1alpha1
+    kind: Job
+    labelSelector:
+      matchLabels:
+        volcano-global.io/dispatch: 'true'
+    namespace: default
+  schedulerName: default-scheduler

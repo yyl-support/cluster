@@ -1,0 +1,91 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-test26-
+    labels:
+        huawei.com/ascend-1980: "1"
+        huawei.com/npu: "true"
+        jobPRID: "26"
+        jobRepositoryName: testorg-testrepo-test26
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test26-npu-generic-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          #!/bin/bash
+                          echo "Testing generic NPU with custom CPU and memory"
+                          echo "Running on arm64 with 2 CPUs, 1G memory, 1 NPU"
+                          npu-smi info || echo "npu-smi not available"
+                          echo "Listing /usr/local/Ascend/driver:"
+                          ls -la /usr/local/Ascend/driver || echo "Directory not found or empty"
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            huawei.com/ascend-1980: "1"
+                            memory: 1Gi
+                        requests:
+                            cpu: "2"
+                            huawei.com/ascend-1980: "1"
+                            memory: 1Gi
+                      volumeMounts:
+                        - name: ascend-driver
+                          mountPath: /usr/local/Ascend/driver
+                          readOnly: true
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "2"
+                        - name: JOB_ID
+                          value: job-26
+                        - name: BUILDNUMBER
+                          value: "2601"
+                        - name: MAX_JOBS
+                          value: "2"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                affinity:
+                    nodeAffinity:
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                            nodeSelectorTerms:
+                                - matchExpressions:
+                                    - key: node.kubernetes.io/npu.chip.name
+                                      operator: NotIn
+                                      values:
+                                        - 310P3
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                volumes:
+                    - name: ascend-driver
+                      hostPath:
+                        path: /usr/local/Ascend/driver
+                restartPolicy: Never

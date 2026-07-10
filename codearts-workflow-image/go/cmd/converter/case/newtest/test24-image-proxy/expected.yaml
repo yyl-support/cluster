@@ -1,0 +1,71 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-test24-
+    labels:
+        jobPRID: "24"
+        jobRepositoryName: testorg-testrepo-test24
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test24-image-proxy-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-north-4.myhuaweicloud.com/inference/ascend_mindie_ubuntu_aarch64:20260514_ubuntu24_3.1.0_cann9.0.0_torch2.9.0_py311
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          #!/bin/bash
+                          echo "Testing default proxy behavior"
+                          echo "Image should use default proxy registry"
+                          ls -la
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "1"
+                            memory: 1Gi
+                        requests:
+                            cpu: "1"
+                            memory: 1Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: JOB_ID
+                          value: job-24
+                        - name: BUILDNUMBER
+                          value: "456"
+                        - name: TEST_VAR
+                          value: test-proxy-default
+                        - name: MAX_JOBS
+                          value: "1"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "1"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never

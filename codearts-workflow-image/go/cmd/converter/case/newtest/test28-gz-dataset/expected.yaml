@@ -1,0 +1,93 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: ascend-ascendnpu-ir-
+    labels:
+        jobPRID: "28"
+        jobRepositoryName: ascend-ascendnpu-ir
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test-gz-dataset-28
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          if [ -n "https://gitcode.com/Ascend/AscendNPU-IR.git" ]; then
+                              CLONE_OK=true
+                              git clone --single-branch -b "$(git ls-remote --symref "https://gitcode.com/Ascend/AscendNPU-IR.git" HEAD | sed -n 's/.*refs\/heads\/\([^[:space:]]*\).*/\1/p')" "https://gitcode.com/Ascend/AscendNPU-IR.git" "$WORKSPACE" || {
+                                  mkdir "$WORKSPACE" || echo "WARNING: directory exists"
+                                  echo "WARNING: 主项目拉取失败！"
+                                  CLONE_OK=false
+                              }
+                              cd "$WORKSPACE"
+                              if [ "$CLONE_OK" = "true" ]; then
+                                  git fetch origin +refs/merge-requests/28/head:pr
+                                  git config --global user.name "robot"
+                                  git config --global user.email "your@emaple.com"
+                                  git merge pr --no-ff -m "Merge $(git ls-remote --symref "https://gitcode.com/Ascend/AscendNPU-IR.git" HEAD | sed -n 's/.*refs\/heads\/\([^[:space:]]*\).*/\1/p') from refs/merge-requests/28/head" || {
+                                      echo "WARNING: 主项目merge失败！"
+                                  }
+                              fi
+                          fi
+                          #!/bin/bash
+                          echo "Guangzhou dataset mount test with ascend-ascendnpu-ir PVC"
+                          ls -la /dataset
+                          echo "Test complete"
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "8"
+                            memory: 8Gi
+                        requests:
+                            cpu: "8"
+                            memory: 8Gi
+                      volumeMounts:
+                        - name: dataset
+                          mountPath: /dataset
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: JOB_ID
+                          value: job-28
+                        - name: BUILDNUMBER
+                          value: "456"
+                        - name: MAX_JOBS
+                          value: "8"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "8"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                volumes:
+                    - name: dataset
+                      persistentVolumeClaim:
+                        claimName: ascend-ascendnpu-ir
+                restartPolicy: Never

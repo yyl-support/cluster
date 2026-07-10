@@ -1,0 +1,139 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: ascend-ascendnpu-ir-
+    labels:
+        jobRepositoryName: ascend-ascendnpu-ir
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test-git-clone-cp-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          (trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          if [ -n "https://gitcode.com/Ascend/AscendNPU-IR.git" ]; then
+                              CLONE_OK=true
+                              git clone --single-branch -b "$(git ls-remote --symref "https://gitcode.com/Ascend/AscendNPU-IR.git" HEAD | sed -n 's/.*refs\/heads\/\([^[:space:]]*\).*/\1/p')" "https://gitcode.com/Ascend/AscendNPU-IR.git" "$WORKSPACE" || {
+                                  mkdir "$WORKSPACE" || echo "WARNING: directory exists"
+                                  echo "WARNING: 主项目拉取失败！"
+                                  CLONE_OK=false
+                              }
+                              cd "$WORKSPACE"
+                          fi
+                          #!/bin/sh
+                          echo "Building artifacts..."
+                          echo xxxx > test.txt
+                          echo yyyy > debug.log
+                          echo "Build complete"
+
+                          cd ${WORKSPACE}
+                          cp -r --parents *.txt *.log /output/
+                          ); _ec=$?; echo $_ec > /output/.ascend-done; exit $_ec
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "8"
+                            memory: 8Gi
+                        requests:
+                            cpu: "8"
+                            memory: 8Gi
+                      volumeMounts:
+                        - name: output
+                          mountPath: /output
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "8"
+                        - name: JOB_ID
+                          value: job-git-cp
+                        - name: BUILDNUMBER
+                          value: "313233"
+                        - name: MAX_JOBS
+                          value: "8"
+                    - name: copy-artifact
+                      image: swr.cn-southwest-2.myhuaweicloud.com/modelfoundry/alpine:3.23.3
+                      command:
+                        - sh
+                      args:
+                        - -c
+                        - |-
+                          trap 'echo "Received TERM, exiting."; exit 0' TERM
+                          TIMER_FILE="/tmp/reset_timer"
+                          TIMEOUT_SEC=600
+                          touch "$TIMER_FILE"
+                          COUNT=0
+                          while true; do
+                            if [ -f "$DONE_FILE" ]; then
+                              _ascend_exit=$(cat "$DONE_FILE" 2>/dev/null || echo "1")
+                              echo "ascend container finished (exit $_ascend_exit)."
+                              if [ "$_ascend_exit" != "0" ]; then
+                                echo "ascend failed, exiting sidecar."
+                                exit 0
+                              fi
+                            fi
+                            LAST=$(stat -c %Y "$TIMER_FILE" 2>/dev/null || stat -f %m "$TIMER_FILE")
+                            NOW=$(date +%s)
+                            ELAPSED=$((NOW - LAST))
+                            if [ "$ELAPSED" -ge "$TIMEOUT_SEC" ]; then
+                              echo "Timer expired. Exiting."
+                              exit 0
+                            fi
+                            COUNT=$((COUNT + 1))
+                            if [ $((COUNT % 5)) -eq 0 ]; then
+                              REMAINING=$((TIMEOUT_SEC - ELAPSED))
+                              echo "Timer remaining: ${REMAINING}s"
+                            fi
+                            sleep 1
+                          done
+                      resources:
+                        limits:
+                            cpu: "2"
+                            memory: 1Gi
+                        requests:
+                            cpu: 200m
+                            memory: 200Mi
+                      volumeMounts:
+                        - name: output
+                          mountPath: /output
+                      env:
+                        - name: DONE_FILE
+                          value: /output/.ascend-done
+                        - name: WORKSPACE
+                          value: /workspace
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                volumes:
+                    - name: output
+                      emptyDir:
+                        sizeLimit: 10Gi
+                restartPolicy: Never

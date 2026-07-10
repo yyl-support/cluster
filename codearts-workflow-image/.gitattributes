@@ -1,0 +1,17 @@
+# Set default behavior to auto (text files normalized to LF on commit)
+* text=auto
+
+# Explicitly normalize shell scripts to LF (Unix line endings)
+*.sh text eol=lf
+*.bash text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf
+
+# Binary files should not be touched
+*.png binary
+*.jpg binary
+*.zip binary

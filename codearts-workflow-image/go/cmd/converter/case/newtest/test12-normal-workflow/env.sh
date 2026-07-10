@@ -1,0 +1,11 @@
+#!/bin/bash
+export CP_runs_on="amd64-cpu-1-mem-1G"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11"
+export CP_pipeline_run_id="test-normal-workflow-123"
+export CP_merge_id="112"
+export CP_repo_url="https://github.com/testorg/testrepo-test12.git"
+export JOB_ID="job-normal-workflow"
+export BUILDNUMBER="121314151"
+export CP_artifacts="*.txt;*.log"
+export WORKSPACE="/home/chenqi252/code/agentpk/opencode/codearts-workflow-image/go/cmd/converter/case/newtest/test12-normal-workflow/artifacts"
+export CP_timestamp="1012"

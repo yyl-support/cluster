@@ -1,0 +1,76 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-test15-
+    labels:
+        jobPRID: "15"
+        jobRepositoryName: testorg-testrepo-test15
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test-dataset-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          #!/bin/bash
+                          echo "Dataset mount test"
+                          # echo a > /dataset/test.txt
+                          ls -la /dataset
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "8"
+                            memory: 8Gi
+                        requests:
+                            cpu: "8"
+                            memory: 8Gi
+                      volumeMounts:
+                        - name: dataset
+                          mountPath: /dataset
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: JOB_ID
+                          value: job-123
+                        - name: BUILDNUMBER
+                          value: "456"
+                        - name: MAX_JOBS
+                          value: "8"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "8"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                volumes:
+                    - name: dataset
+                      persistentVolumeClaim:
+                        claimName: testorg-testrepo-test15
+                restartPolicy: Never

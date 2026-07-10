@@ -1,0 +1,590 @@
+{
+    "simple": {
+        "test-dir": "go/cmd/converter/case/newtest/test1-simple",
+        "env": "go/cmd/converter/case/newtest/test1-simple/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test1-simple/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test1-simple/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "with-secrets": {
+        "test-dir": "go/cmd/converter/case/newtest/test2-with-secrets",
+        "env": "go/cmd/converter/case/newtest/test2-with-secrets/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test2-with-secrets/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test2-with-secrets/expected.yaml",
+        "expected-secret": "go/cmd/converter/case/newtest/test2-with-secrets/expected-secret.yaml",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "custom-resources": {
+        "test-dir": "go/cmd/converter/case/newtest/test3-custom-resources",
+        "env": "go/cmd/converter/case/newtest/test3-custom-resources/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test3-custom-resources/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test3-custom-resources/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "custom-image": {
+        "test-dir": "go/cmd/converter/case/newtest/test4-custom-image",
+        "env": "go/cmd/converter/case/newtest/test4-custom-image/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test4-custom-image/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test4-custom-image/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "no-merge-id": {
+        "test-dir": "go/cmd/converter/case/newtest/test5-no-merge-id",
+        "env": "go/cmd/converter/case/newtest/test5-no-merge-id/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test5-no-merge-id/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test5-no-merge-id/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "empty-sensitive-value": {
+        "test-dir": "go/cmd/converter/case/newtest/test6-empty-sensitive-value",
+        "env": "go/cmd/converter/case/newtest/test6-empty-sensitive-value/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test6-empty-sensitive-value/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test6-empty-sensitive-value/expected.yaml",
+        "expected-secret": "go/cmd/converter/case/newtest/test6-empty-sensitive-value/expected-secret.yaml",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "workspace-filtered": {
+        "test-dir": "go/cmd/converter/case/newtest/test7-workspace-filtered",
+        "env": "go/cmd/converter/case/newtest/test7-workspace-filtered/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test7-workspace-filtered/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test7-workspace-filtered/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "git-clone": {
+        "test-dir": "go/cmd/converter/case/newtest/test8-git-clone",
+        "env": "go/cmd/converter/case/newtest/test8-git-clone/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test8-git-clone/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test8-git-clone/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "910b4": {
+        "test-dir": "go/cmd/converter/case/newtest/test9-910b4",
+        "env": "go/cmd/converter/case/newtest/test9-910b4/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test9-910b4/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test9-910b4/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "cp-artifacts": {
+        "test-dir": "go/cmd/converter/case/newtest/test10-cp-artifacts",
+        "env": "go/cmd/converter/case/newtest/test10-cp-artifacts/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test10-cp-artifacts/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test10-cp-artifacts/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}",
+                "CP_ARTIFACTS_TEMP_FOLDER": "${CP_ARTIFACTS_TEMP_FOLDER}"
+            }
+        }
+    },
+    "git-clone-var-ref": {
+        "test-dir": "go/cmd/converter/case/newtest/test11-git-clone-var-ref",
+        "env": "go/cmd/converter/case/newtest/test11-git-clone-var-ref/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test11-git-clone-var-ref/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test11-git-clone-var-ref/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "normal-workflow": {
+        "test-dir": "go/cmd/converter/case/newtest/test12-normal-workflow",
+        "env": "go/cmd/converter/case/newtest/test12-normal-workflow/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test12-normal-workflow/shell.sh",
+        "workflow-template-v2": "go/cmd/converter/case/newtest/test12-normal-workflow/workflow_templatev2.yaml",
+        "expected-yaml": "go/cmd/converter/case/newtest/test12-normal-workflow/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}"
+            }
+        }
+    },
+    "test13-cp-artifacts-v2": {
+        "test-dir": "go/cmd/converter/case/newtest/test13-cp-artifacts-v2",
+        "env": "go/cmd/converter/case/newtest/test13-cp-artifacts-v2/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test13-cp-artifacts-v2/shell.sh",
+        "workflow-template-v2": "go/cmd/converter/case/newtest/test13-cp-artifacts-v2/workflow_templatev2.yaml",
+        "expected-yaml": "go/cmd/converter/case/newtest/test13-cp-artifacts-v2/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}",
+                "CP_ARTIFACTS_TEMP_FOLDER": "${CP_ARTIFACTS_TEMP_FOLDER}"
+            }
+        }
+    },
+    "test14-exit1": {
+        "test-dir": "go/cmd/converter/case/newtest/test14-exit1",
+        "env": "go/cmd/converter/case/newtest/test14-exit1/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test14-exit1/shell.sh",
+        "workflow-template-v2": "go/cmd/converter/case/newtest/test14-exit1/workflow_templatev2.yaml",
+        "expected-yaml": "go/cmd/converter/case/newtest/test14-exit1/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}",
+                "CP_ARTIFACTS_TEMP_FOLDER": "${CP_ARTIFACTS_TEMP_FOLDER}"
+            }
+        }
+    },
+    "test15-dataset": {
+        "test-dir": "go/cmd/converter/case/newtest/test15-dataset",
+        "env": "go/cmd/converter/case/newtest/test15-dataset/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test15-dataset/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test15-dataset/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test16-dataset-mapping": {
+        "test-dir": "go/cmd/converter/case/newtest/test16-dataset-mapping",
+        "env": "go/cmd/converter/case/newtest/test16-dataset-mapping/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test16-dataset-mapping/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test16-dataset-mapping/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test17-image-pull-failure": {
+        "test-dir": "go/cmd/converter/case/newtest/test17-image-pull-failure",
+        "env": "go/cmd/converter/case/newtest/test17-image-pull-failure/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test17-image-pull-failure/shell.sh",
+        "workflow-template-v2": "go/cmd/converter/case/newtest/test17-image-pull-failure/workflow_templatev2.yaml",
+        "expected-yaml": "go/cmd/converter/case/newtest/test17-image-pull-failure/expected.yaml",
+        "expected-secret": "go/cmd/converter/case/newtest/test17-image-pull-failure/expected-secret.yaml",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test18-with-secrets": {
+        "test-dir": "go/cmd/converter/case/newtest/test18-with-secrets",
+        "env": "go/cmd/converter/case/newtest/test18-with-secrets/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test18-with-secrets/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test18-with-secrets/expected.yaml",
+        "expected-secret": "go/cmd/converter/case/newtest/test18-with-secrets/expected-secret.yaml",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test19-dynamic-timestamp": {
+        "test-dir": "go/cmd/converter/case/newtest/test19-dynamic-timestamp",
+        "env": "go/cmd/converter/case/newtest/test19-dynamic-timestamp/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test19-dynamic-timestamp/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test19-dynamic-timestamp/expected.yaml",
+        "expected-secret": "go/cmd/converter/case/newtest/test19-dynamic-timestamp/expected-secret.yaml",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test20-ascend-driver": {
+        "test-dir": "go/cmd/converter/case/newtest/test20-ascend-driver",
+        "env": "go/cmd/converter/case/newtest/test20-ascend-driver/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test20-ascend-driver/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test20-ascend-driver/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test21-dataset": {
+        "test-dir": "go/cmd/converter/case/newtest/test21-dataset",
+        "env": "go/cmd/converter/case/newtest/test21-dataset/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test21-dataset/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test21-dataset/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test22-git-cdn": {
+        "test-dir": "go/cmd/converter/case/newtest/test22-git-cdn",
+        "env": "go/cmd/converter/case/newtest/test22-git-cdn/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test22-git-cdn/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test22-git-cdn/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test23-large-queue": {
+        "test-dir": "go/cmd/converter/case/newtest/test23-large-queue",
+        "env": "go/cmd/converter/case/newtest/test23-large-queue/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test23-large-queue/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test23-large-queue/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test24-image-proxy": {
+        "test-dir": "go/cmd/converter/case/newtest/test24-image-proxy",
+        "env": "go/cmd/converter/case/newtest/test24-image-proxy/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test24-image-proxy/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test24-image-proxy/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test26-npu-generic": {
+        "test-dir": "go/cmd/converter/case/newtest/test26-npu-generic",
+        "env": "go/cmd/converter/case/newtest/test26-npu-generic/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test26-npu-generic/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test26-npu-generic/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test27-310p3": {
+        "test-dir": "go/cmd/converter/case/newtest/test27-310p3",
+        "env": "go/cmd/converter/case/newtest/test27-310p3/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test27-310p3/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test27-310p3/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test28-gz-dataset": {
+        "test-dir": "go/cmd/converter/case/newtest/test28-gz-dataset",
+        "env": "go/cmd/converter/case/newtest/test28-gz-dataset/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test28-gz-dataset/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test28-gz-dataset/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test29-cp-artifact-failure": {
+        "test-dir": "go/cmd/converter/case/newtest/test29-cp-artifact-failure",
+        "env": "go/cmd/converter/case/newtest/test29-cp-artifact-failure/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test29-cp-artifact-failure/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test29-cp-artifact-failure/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}",
+                "CP_ARTIFACTS_TEMP_FOLDER": "${CP_ARTIFACTS_TEMP_FOLDER}"
+            }
+        }
+    },
+    "test30-cp-pull-failure": {
+        "test-dir": "go/cmd/converter/case/newtest/test30-cp-pull-failure",
+        "env": "go/cmd/converter/case/newtest/test30-cp-pull-failure/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test30-cp-pull-failure/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test30-cp-pull-failure/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}",
+                "CP_ARTIFACTS_TEMP_FOLDER": "${CP_ARTIFACTS_TEMP_FOLDER}"
+            }
+        }
+    },
+    "test32-no-artifact-files": {
+        "test-dir": "go/cmd/converter/case/newtest/test32-no-artifact-files",
+        "env": "go/cmd/converter/case/newtest/test32-no-artifact-files/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test32-no-artifact-files/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test32-no-artifact-files/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}"
+            }
+        }
+    },
+    "test33-goproxy": {
+        "test-dir": "go/cmd/converter/case/newtest/test33-goproxy",
+        "env": "go/cmd/converter/case/newtest/test33-goproxy/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test33-goproxy/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test33-goproxy/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test34-ipv6": {
+        "test-dir": "go/cmd/converter/case/newtest/test34-ipv6",
+        "env": "go/cmd/converter/case/newtest/test34-ipv6/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test34-ipv6/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test34-ipv6/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test35-ingress-bandwidth": {
+        "test-dir": "go/cmd/converter/case/newtest/test35-ingress-bandwidth",
+        "env": "go/cmd/converter/case/newtest/test35-ingress-bandwidth/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test35-ingress-bandwidth/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test35-ingress-bandwidth/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}"
+            }
+        }
+    },
+    "test31-git-clone-cp-artifacts": {
+        "test-dir": "go/cmd/converter/case/newtest/test31-git-clone-cp-artifacts",
+        "env": "go/cmd/converter/case/newtest/test31-git-clone-cp-artifacts/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test31-git-clone-cp-artifacts/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test31-git-clone-cp-artifacts/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}",
+                "WORKSPACE": "${WORKSPACE}"
+            }
+        }
+    },
+    "test25-shm": {
+        "test-dir": "go/cmd/converter/case/newtest/test25-shm",
+        "env": "go/cmd/converter/case/newtest/test25-shm/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test25-shm/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test25-shm/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test36-image-pull-policy": {
+        "test-dir": "go/cmd/converter/case/newtest/test36-image-pull-policy",
+        "env": "go/cmd/converter/case/newtest/test36-image-pull-policy/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test36-image-pull-policy/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test36-image-pull-policy/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test37-delay-exit": {
+        "test-dir": "go/cmd/converter/case/newtest/test37-delay-exit",
+        "env": "go/cmd/converter/case/newtest/test37-delay-exit/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test37-delay-exit/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test37-delay-exit/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    },
+    "test38-dataset-readonly": {
+        "test-dir": "go/cmd/converter/case/newtest/test38-dataset-readonly",
+        "env": "go/cmd/converter/case/newtest/test38-dataset-readonly/env.sh",
+        "shell-script": "go/cmd/converter/case/newtest/test38-dataset-readonly/shell.sh",
+        "expected-yaml": "go/cmd/converter/case/newtest/test38-dataset-readonly/expected.yaml",
+        "expected-secret": "",
+        "validation": {
+            "script": "eval.sh",
+            "params": {
+                "WORKFLOW_NAME": "${WORKFLOW_NAME}",
+                "NAMESPACE": "argo",
+                "KUBECONFIG": "${KUBECONFIG}"
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+#!/bin/bash
+export CP_runs_on="arm64-cpu-1-mem-1G"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11"
+export CP_pipeline_run_id="test29-cp-artifact-failure-123"
+export CP_merge_id="129"
+export CP_repo_url="https://github.com/testorg/testrepo-test29.git"
+export JOB_ID="job-test29"
+export BUILDNUMBER="20240329"
+export CP_artifacts="*.txt;*.log"
+export CP_artifacts_temp_folder="/output/artifact"
+export WORKSPACE="/home/chenqi252/code/agentpk/opencode/codearts-workflow-image/go/cmd/converter/case/newtest/test29-cp-artifact-failure/artifacts"
+export CP_timestamp="1029"
+export EXPECTED_EXIT_CODE="1"

@@ -1,0 +1,68 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-test37-
+    labels:
+        jobPRID: "37"
+        jobRepositoryName: testorg-testrepo-test37
+        kubernetes.io/arch: amd64
+        pipeline/run-id: test-delay-exit-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/python:3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 20' EXIT
+                          #!/bin/bash
+                          echo "delay exit test"
+                          exit 1
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "1"
+                            memory: 1Gi
+                        requests:
+                            cpu: "1"
+                            memory: 1Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: JOB_ID
+                          value: job-delay-exit
+                        - name: BUILDNUMBER
+                          value: "202407"
+                        - name: MAX_JOBS
+                          value: "1"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "1"
+                nodeSelector:
+                    kubernetes.io/arch: amd64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never

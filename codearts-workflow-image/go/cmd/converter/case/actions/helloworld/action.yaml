@@ -1,0 +1,18 @@
+name: 'My code check'
+description: 'A simple composite action example'
+inputs:
+  greeting:
+    description: 'Greeting message'
+    required: true
+    default: 'Hello world'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Say hello 1
+      shell: bash
+      run: echo "${{ inputs.greeting }} from composite action!"
+
+    - name: Say hello 2
+      shell: bash
+      run: uname -m 

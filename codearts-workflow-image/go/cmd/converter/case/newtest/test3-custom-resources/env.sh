@@ -1,0 +1,10 @@
+export CP_runs_on="arm64-cpu-16-mem-32G"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11"
+export CP_pipeline_run_id="test-resources-789"
+export CP_merge_id="17"
+export CP_repo_url="https://github.com/testorg/testrepo-test3.git"
+export JOB_ID="job-resource"
+export BUILDNUMBER="202202"
+export CP_timestamp="1003"
+
+export CP_image_proxy="swr.cn-southwest-2.myhuaweicloud.com"

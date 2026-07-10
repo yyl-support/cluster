@@ -1,0 +1,4 @@
+[files]
+extend-exclude = ["*.yaml", "*.yml", "*.json", "*.toml", "*.md"]
+
+[default]

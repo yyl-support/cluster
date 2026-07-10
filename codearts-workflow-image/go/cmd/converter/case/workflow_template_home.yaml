@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: codearts-build-template- 
+spec:
+  activeDeadlineSeconds: 216000
+  templates:
+    - name: execute
+      inputs: {}
+      outputs: {}
+      metadata: {}
+      script:
+        name: ascend
+        image: swr.cn-southwest-2.myhuaweicloud.com/modelfoundry/git:latest
+        command:
+          - sh
+        args:
+          - |
+              test
+        workingDir: /workspace
+        resources:
+          limits:
+            cpu: "8"
+            memory: "8Gi"
+          requests:
+            cpu: "8"
+            memory: "8Gi"
+        env:
+          - name: WORKSPACE
+            value: /workspace
+          - name: workspace
+            value: /workspace            
+  entrypoint: excuete
+  arguments: {}

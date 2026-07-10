@@ -1,0 +1,8 @@
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: large-task-shared-queue
+spec:
+  priority: 100
+  reclaimable: true
+  weight: 10

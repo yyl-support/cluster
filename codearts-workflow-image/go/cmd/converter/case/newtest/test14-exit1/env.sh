@@ -1,0 +1,12 @@
+export CP_runs_on="arm64"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11"
+export CP_pipeline_run_id="test14-exit1-123"
+export CP_merge_id="15"
+export CP_repo_url="https://github.com/testorg/testrepo-test14-exit1.git"
+export JOB_ID="job-123"
+export BUILDNUMBER="456"
+export TEST_VAR="test-value"
+export EXPECTED_EXIT_CODE="1"
+export CP_timestamp="1014"
+
+export CP_image_proxy="swr.cn-southwest-2.myhuaweicloud.com"

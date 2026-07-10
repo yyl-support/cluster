@@ -1,0 +1,50 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  generateName: test-log-
+  labels:
+    test: log-test
+spec:
+  policies:
+    - event: PodFailed
+      action: AbortJob
+  queue: large-task-shared-queue
+  maxRetry: 0
+  tasks:
+    - name: main-script
+      replicas: 1
+      template:
+        spec:
+          containers:
+            - name: ascend
+              image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+              command:
+                - bash
+                - -c
+              args:
+                - |
+                  echo "=== Test Log Streaming ==="
+                  echo "Step 1: Starting..."
+                  sleep 10
+                  echo "Step 2: Processing..."
+                  sleep 10
+                  echo "Step 3: Completed!"
+                  echo "All done!"
+              workingDir: /workspace
+              resources:
+                limits:
+                  memory: 8Gi
+                requests:
+                  cpu: "4"
+                  memory: 8Gi
+              env:
+                - name: WORKSPACE
+                  value: /workspace
+          nodeSelector:
+            kubernetes.io/arch: arm64
+          imagePullSecrets:
+            - name: huawei-swr-image-pull-secret-model-gy
+          activeDeadlineSeconds: 600
+          securityContext:
+            runAsUser: 0
+          restartPolicy: Never

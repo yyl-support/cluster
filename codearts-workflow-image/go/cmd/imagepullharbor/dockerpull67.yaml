@@ -1,0 +1,69 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-67-
+    labels:
+        jobPRID: "15"
+        jobRepositoryName: testorg-testrepo-test1
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test-simple-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 0
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: harbor-portal.osinfra.cn/north4-myhuaweicloud/ascend-mindx/mindx_x86:indexSDK_20260518
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |
+                          git config --global url."http://git-cache-http-server.git-cache.svc.cluster.local:8080".insteadOf "https://gitcode.com" || echo "WARNING: git config failed for gitcode"
+                          git config --global url."http://git-cache-github.git-cache.svc.cluster.local:8080".insteadOf "https://gh-proxy.test.osinfra.cn/https://github.com" || echo "WARNING: git config failed for github"
+                          git config --global url."http://git-cache-gitee.git-cache.svc.cluster.local:8080".insteadOf "https://gitee.com" || echo "WARNING: git config failed for gitee"
+                          git config --global url."http://git-cache-atomgit.git-cache.svc.cluster.local:8080".insteadOf "https://atomgit.com" || echo "WARNING: git config failed for atomgit"
+                          git config --global url."http://git-cache-codehub.git-cache.svc.cluster.local:8080".insteadOf "https://codehub.devcloud.cn-north-4.huaweicloud.com" || echo "WARNING: git config failed for codehub"
+                          #!/bin/bash
+                          echo "Hello from test script"
+                          echo "Current directory: $(pwd)"
+                          ls -la
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            memory: 8Gi
+                        requests:
+                            cpu: "8"
+                            memory: 8Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: JOB_ID
+                          value: job-123
+                        - name: BUILDNUMBER
+                          value: "456"
+                        - name: TEST_VAR
+                          value: test-value
+                        - name: MAX_JOBS
+                          value: "8"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "8"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                    kubernetes.io/hostname: 172.16.0.67
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never

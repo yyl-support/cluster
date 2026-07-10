@@ -1,0 +1,13 @@
+#!/bin/bash
+export CP_runs_on="arm64"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/nonexistent/invalid-image:does-not-exist"
+export CP_pipeline_run_id="test17-image-pull-failure-123"
+export CP_merge_id="17"
+export CP_repo_url="https://github.com/testorg/testrepo-test17.git"
+export JOB_ID="job-17"
+export BUILDNUMBER="1701"
+export API_TOKEN="secret-api-token-17"
+export DB_PASSWORD="secret-db-password-17"
+export EXPECTED_EXIT_CODE="1"
+export CP_timestamp="1017"
+export CP_image_proxy="swr.cn-southwest-2.myhuaweicloud.com"

@@ -1,0 +1,13 @@
+#!/bin/bash
+export CP_runs_on="amd64-cpu-1-mem-1G"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/nonexistent/invalid-image:does-not-exist"
+export CP_pipeline_run_id="test30-cp-pull-failure-123"
+export CP_merge_id="130"
+export CP_repo_url="https://github.com/testorg/testrepo-test30.git"
+export JOB_ID="job-test30"
+export BUILDNUMBER="20240330"
+export CP_artifacts="*.txt;*.log"
+export CP_artifacts_temp_folder="/output/artifact"
+export WORKSPACE="/home/chenqi252/code/agentpk/opencode/codearts-workflow-image/go/cmd/converter/case/newtest/test30-cp-pull-failure/artifacts"
+export EXPECTED_EXIT_CODE="1"
+export CP_timestamp="1030"

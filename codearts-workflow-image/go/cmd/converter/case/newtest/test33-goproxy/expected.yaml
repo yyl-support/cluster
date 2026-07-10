@@ -1,0 +1,80 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-test33-
+    labels:
+        jobPRID: "133"
+        jobRepositoryName: testorg-testrepo-test33
+        kubernetes.io/arch: amd64
+        pipeline/run-id: test-goproxy-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-north-4.myhuaweicloud.com/ascend-mindx/mindx_x86:mindCluster_20260605_volcano1.12
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          #!/bin/sh
+                          echo "=== GOPROXY Test ==="
+                          go version
+                          go env GOPROXY
+                          echo "GOPROXY_ENV=$GOPROXY"
+                          git clone https://gitcode.com/Ascend/mind-cluster.git
+                          cd /workspace/mind-cluster/component/ascend-operator
+                          cat go.mod | head -3
+                          START=$(date +%s%N)
+                          go clean -modcache
+                          go mod tidy
+                          END=$(date +%s%N)
+                          DURATION=$(( ($END - $START) / 1000000 ))
+                          echo "go mod tidy took ${DURATION}ms"
+                          echo "=== GOPROXY Test Completed ==="
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "1"
+                            memory: 1Gi
+                        requests:
+                            cpu: "1"
+                            memory: 1Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "1"
+                        - name: JOB_ID
+                          value: job-goproxy
+                        - name: BUILDNUMBER
+                          value: "323334353"
+                        - name: MAX_JOBS
+                          value: "1"
+                nodeSelector:
+                    kubernetes.io/arch: amd64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never

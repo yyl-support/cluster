@@ -1,0 +1,33 @@
+apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: ragsdk-policy
+  namespace: ragsdk
+spec:
+  conflictResolution: Abort
+  placement:
+    replicaScheduling:
+      replicaDivisionPreference: Aggregated
+      replicaSchedulingType: Divided
+  preemption: Never
+  priority: 10
+  resourceSelectors:
+  - apiVersion: batch/v1
+    kind: Job
+    namespace: ragsdk
+    labelSelector:
+      matchExpressions:
+        - key: dispatch/001
+          operator: DoesNotExist
+        - key: dispatch/wlcb
+          operator: DoesNotExist
+  - apiVersion: batch.volcano.sh/v1alpha1
+    kind: Job
+    namespace: ragsdk
+    labelSelector:
+      matchExpressions:
+        - key: dispatch/001
+          operator: DoesNotExist
+        - key: dispatch/wlcb
+          operator: DoesNotExist
+  schedulerName: default-scheduler

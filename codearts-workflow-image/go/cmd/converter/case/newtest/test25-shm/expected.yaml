@@ -1,0 +1,82 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-shm-
+    labels:
+        jobPRID: "25"
+        jobRepositoryName: testorg-testrepo-shm
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test-shm-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/python:3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          #!/bin/bash
+
+                          echo "Testing /dev/shm volume mount"
+                          df -h | grep /dev/shm || echo "No /dev/shm found"
+                          ls -la /dev/shm 2>/dev/null || echo "Cannot access /dev/shm"
+                          echo "Creating test file in /dev/shm"
+                          echo "test content" > /dev/shm/test_file && echo "SUCCESS: Can write to /dev/shm" || echo "FAIL: Cannot write to /dev/shm"
+                          cat /dev/shm/test_file && echo "SUCCESS: Can read from /dev/shm" || echo "FAIL: Cannot read from /dev/shm"
+                          rm /dev/shm/test_file
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "1"
+                            memory: 1Gi
+                        requests:
+                            cpu: "1"
+                            memory: 1Gi
+                      volumeMounts:
+                        - name: shm
+                          mountPath: /dev/shm
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: BUILDNUMBER
+                          value: "202406"
+                        - name: JOB_ID
+                          value: job-shm
+                        - name: MAX_JOBS
+                          value: "1"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "1"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                volumes:
+                    - name: shm
+                      emptyDir:
+                        medium: Memory
+                        sizeLimit: 128Mi
+                restartPolicy: Never

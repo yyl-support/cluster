@@ -1,0 +1,58 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-test12-
+    labels:
+        jobPRID: "112"
+        jobRepositoryName: testorg-testrepo-test12
+        pipeline/run-id: test-normal-workflow-123
+spec:
+    queue: large-task-shared-queue
+    tasks:
+        - name: main-script
+          replicas: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          #!/bin/sh
+                          echo "Building artifacts..."
+                          echo xxxx > test.txt
+                          echo yyyy > debug.log
+                          echo "Build complete"
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            memory: 8Gi
+                        requests:
+                            cpu: "2"
+                            memory: 8Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: JOB_ID
+                          value: job-normal-workflow
+                        - name: BUILDNUMBER
+                          value: "121314151"
+                        - name: MAX_JOBS
+                          value: "2"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "2"
+                        - name: HAXE_STD_PATH
+                          value: /usr/share/haxe/std
+                nodeSelector:
+                    kubernetes.io/arch: amd64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never

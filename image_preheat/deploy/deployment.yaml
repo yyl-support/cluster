@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-preheat-webhook
+  namespace: preheat
+  labels:
+    app: harbor-preheat-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: harbor-preheat-webhook
+  template:
+    metadata:
+      labels:
+        app: harbor-preheat-webhook
+    spec:
+      containers:
+        - name: webhook
+          image: harbor-preheat-webhook:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KUBECONFIG_PATH
+              value: "/etc/karmada/kubeconfig"
+            - name: NAMESPACE
+              value: "preheat"
+            - name: PORT
+              value: "8080"
+            - name: CLUSTER_SELECTOR
+              value: ""
+            - name: CONCURRENCY
+              value: "3"
+            - name: TIMEOUT
+              value: "0"
+            - name: INCLUDE_NODES
+              value: ""
+            - name: EXCLUDE_NODES
+              value: "172.16.0.205"
+            - name: REGISTRY
+              value: "harbor-portal.osinfra.cn"
+            - name: IMAGE_PULL_SECRET
+              value: ""
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10

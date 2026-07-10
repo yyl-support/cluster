@@ -1,0 +1,27 @@
+apiVersion: policy.karmada.io/v1alpha1
+kind: ClusterPropagationPolicy
+metadata:
+  name: member2-pod-policy
+spec:
+  conflictResolution: Abort
+  priority: 100
+  placement:
+    clusterAffinity:
+      clusterNames:
+      - 'wlcb'
+  resourceSelectors:
+  - apiVersion: v1
+    kind: Pod
+    labelSelector:
+      matchLabels:
+        dispatch/001: 'true'
+  - apiVersion: batch/v1
+    kind: Job
+    labelSelector:
+      matchLabels:
+        dispatch/001: 'true'
+  - apiVersion: batch.volcano.sh/v1alpha1
+    kind: Job
+    labelSelector:
+      matchLabels:
+        dispatch/wlcb: 'true'

@@ -1,0 +1,67 @@
+name: 'My code check'
+description: 'A simple composite action example'
+
+runs:
+  using: "composite"
+  steps:
+    - name: checkout project repo
+      shell: bash
+      run: |
+        export WORKSPACE=/workspace
+
+        git clone --no-tags --single-branch -b ${target_branch} ${repo_url} ${WORKSPACE} || {
+            echo "ERROR: 主项目拉取失败！"
+            exit 1
+        }
+
+    
+
+        cd ${WORKSPACE}
+
+
+        git fetch origin +refs/merge-requests/${merge_id}/head:pr
+        git config --global user.name "${gitcode_username}"
+        git config --global user.email "your@emaple.com"
+        git merge pr --no-ff -m "Merge ${target_branch} from refs/merge-requests/${merge_id}/head" || {
+            echo "ERROR: 主项目merge失败！"
+            exit 1
+        }
+
+    - name: checkout CI repo
+      shell: bash
+      run: |
+
+
+        if [ -n "${ci_repo_url}" ]; then
+
+
+          ci_repo_name=$(basename "${ci_repo_url}" .git)
+          default_branch=$(git ls-remote --symref ${ci_repo_url}  HEAD | sed -n 's|^.*refs/heads/\(.*\)\tHEAD|\1|p')
+          default_branch=test-actions
+          ci_repo_url=$(echo ${ci_repo_url} | sed "s#https://#https://${gitcode_username}:${gitcode_token}@#g")
+
+          GIT_TERMINAL_PROMPT=0 git clone --depth 1 -b "${default_branch}" \
+              "${ci_repo_url}" \
+              "${WORKSPACE}/${ci_repo_name}" || {
+              echo "ERROR: CI项目拉取失败！"
+              exit 1
+          }
+        fi
+
+
+
+
+        git clone --no-tags --single-branch -b ${CP_target_branch} ${CP_repo_url} ${WORKSPACE} || {
+            echo "ERROR: 主项目拉取失败！"
+            exit 1
+        }
+
+        cd ${WORKSPACE}
+
+        git fetch origin +refs/merge-requests/${CP_merge_id}/head:pr
+        git config --global user.name "robot"
+        git config --global user.email "your@emaple.com"
+        git merge pr --no-ff -m "Merge ${CP_target_branch} from refs/merge-requests/${CP_merge_id}/head" || {
+            echo "ERROR: 主项目merge失败！"
+            exit 1
+        }

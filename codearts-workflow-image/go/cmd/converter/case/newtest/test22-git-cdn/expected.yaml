@@ -1,0 +1,133 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: ascend-ragsdk-
+    labels:
+        jobRepositoryName: ascend-ragsdk
+        kubernetes.io/arch: amd64
+        pipeline/run-id: test-git-cdn-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: shared-flexible-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          if [ -n "https://gitcode.com/Ascend/RAGSDK.git" ]; then
+                              CLONE_OK=true
+                              git clone --single-branch -b "master" "https://gitcode.com/Ascend/RAGSDK.git" "$WORKSPACE" || {
+                                  mkdir "$WORKSPACE" || echo "WARNING: directory exists"
+                                  echo "WARNING: 主项目拉取失败！"
+                                  CLONE_OK=false
+                              }
+                              cd "$WORKSPACE"
+                          fi
+                          #!/bin/bash
+                          set -e
+
+                          echo "=========================================="
+                          echo "Git CDN Multi-Provider Clone Test"
+                          echo "=========================================="
+
+                          echo ""
+                          echo "[1] Verifying git CDN config:"
+                          git config --global --list | grep url.
+
+                          echo ""
+                          echo "[2] Cloning repos from different providers..."
+
+                          mkdir -p /workspace/test-clones
+                          cd /workspace/test-clones
+
+                          echo ""
+                          echo "--- GitCode ---"
+                          if git clone --depth 1 https://gitcode.com/Ascend/RAGSDK.git gitcode-ragsdk 2>&1; then
+                              echo "✓ GitCode clone SUCCESS"
+                              ls -la gitcode-ragsdk | head -5
+                          else
+                              echo "✗ GitCode clone FAILED"
+                          fi
+
+                          echo ""
+                          echo "--- GitHub (via gh-proxy) ---"
+                          if git clone --depth 1 https://gh-proxy.test.osinfra.cn/https://github.com/Ascend/fbgemm-ascend.git github-fbgemm 2>&1; then
+                              echo "✓ GitHub clone SUCCESS"
+                              ls -la github-fbgemm | head -5
+                          else
+                              echo "✗ GitHub clone FAILED"
+                          fi
+
+                          echo ""
+                          echo "--- Gitee ---"
+                          if git clone --depth 1 https://gitee.com/ascend/samples.git gitee-samples 2>&1; then
+                              echo "✓ Gitee clone SUCCESS"
+                              ls -la gitee-samples | head -5
+                          else
+                              echo "✗ Gitee clone FAILED"
+                          fi
+
+                          echo ""
+                          echo "--- CodeHub ---"
+                          if git clone --depth 1 https://codehub.devcloud.cn-north-4.huaweicloud.com/6a4fa7d010294da695be52110517c08b/CI_gitcode.git codehub-ci 2>&1; then
+                              echo "✓ CodeHub clone SUCCESS"
+                              ls -la codehub-ci | head -5
+                          else
+                              echo "✗ CodeHub clone FAILED (expected - requires auth)"
+                          fi
+
+                          echo ""
+                          echo "=========================================="
+                          echo "Clone test completed"
+                          echo "=========================================="
+                          echo ""
+                          echo "Final workspace structure:"
+                          ls -la /workspace/test-clones
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "1"
+                            memory: 1Gi
+                        requests:
+                            cpu: "1"
+                            memory: 1Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: JOB_ID
+                          value: job-test22
+                        - name: BUILDNUMBER
+                          value: test22
+                        - name: MAX_JOBS
+                          value: "1"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "1"
+                nodeSelector:
+                    kubernetes.io/arch: amd64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never

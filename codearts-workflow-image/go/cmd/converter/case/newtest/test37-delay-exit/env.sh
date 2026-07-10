@@ -1,0 +1,10 @@
+#!/bin/bash
+export CP_runs_on="amd64-cpu-1-mem-1G"
+export CP_docker_image="swr.cn-southwest-2.myhuaweicloud.com/base_image/python:3.11"
+export CP_pipeline_run_id="test-delay-exit-123"
+export CP_merge_id="37"
+export CP_repo_url="https://github.com/testorg/testrepo-test37.git"
+export JOB_ID="job-delay-exit"
+export BUILDNUMBER="202407"
+export CP_timestamp="1037"
+export CP_delay_exit="20"

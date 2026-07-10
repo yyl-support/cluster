@@ -1,0 +1,47 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: test-ttl-12s
+  labels:
+    volcano.sh/job-type: test
+spec:
+  policies:
+    - event: PodFailed
+      action: AbortJob
+  queue: large-task-shared-queue
+  maxRetry: 0
+  ttlSecondsAfterFinished: 30
+  tasks:
+    - name: main-script
+      replicas: 1
+      template:
+        metadata: {}
+        spec:
+          containers:
+            - name: ascend
+              image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+              command:
+                - bash
+                - -c
+              args:
+                - |
+                  echo "Test TTL cleanup job started"
+                  echo "Job will complete in 5 seconds"
+                  sleep 5
+                  echo "Job completed successfully"
+                  exit 0
+              workingDir: /workspace
+              env:
+                - name: WORKSPACE
+                  value: /workspace
+              resources:
+                limits:
+                  memory: 1Gi
+                requests:
+                  cpu: "1"
+                  memory: 1Gi
+          imagePullSecrets:
+            - name: huawei-swr-image-pull-secret-model-gy
+          securityContext:
+            runAsUser: 0
+          restartPolicy: Never

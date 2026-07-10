@@ -1,0 +1,20 @@
+apiVersion: policy.karmada.io/v1alpha1
+kind: ClusterPropagationPolicy
+metadata:
+  name: ragsdk-namespace-propagation
+spec:
+  conflictResolution: Overwrite
+  placement:
+    clusterAffinity:
+      clusterNames:
+      - 001
+      - wlcb
+    replicaScheduling:
+      replicaSchedulingType: Duplicated
+  preemption: Never
+  priority: 0
+  resourceSelectors:
+  - apiVersion: v1
+    kind: Namespace
+    name: ragsdk
+  schedulerName: default-scheduler

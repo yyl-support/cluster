@@ -1,0 +1,69 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+    generateName: testorg-testrepo-large-
+    labels:
+        jobPRID: "101"
+        jobRepositoryName: testorg-testrepo-large
+        kubernetes.io/arch: arm64
+        pipeline/run-id: test-large-queue-123
+spec:
+    policies:
+        - event: PodFailed
+          action: AbortJob
+    queue: large-task-shared-queue
+    maxRetry: 1
+    minAvailable: 1
+    ttlSecondsAfterFinished: 1800
+    tasks:
+        - name: main-script
+          replicas: 1
+          maxRetry: 1
+          template:
+            spec:
+                containers:
+                    - name: ascend
+                      image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:8.2.rc1-910b-ubuntu22.04-py3.11
+                      command:
+                        - bash
+                        - -c
+                      args:
+                        - |-
+                          trap 'EXIT_CODE=$?; [ "$EXIT_CODE" -ne 0 ] && sleep 10' EXIT
+                          #!/bin/bash
+                          echo "Test large queue with CPU=64"
+                          sleep 1
+                          echo "Done"
+                      workingDir: /workspace
+                      resources:
+                        limits:
+                            cpu: "64"
+                            memory: 8Gi
+                        requests:
+                            cpu: "64"
+                            memory: 8Gi
+                      env:
+                        - name: WORKSPACE
+                          value: /workspace
+                        - name: workspace
+                          value: /workspace
+                        - name: GOPROXY
+                          value: http://cache-service.nginx-pypi-cache.svc.cluster.local:8084|https://goproxy.cn|direct
+                        - name: GOSUMDB
+                          value: sum.golang.google.cn
+                        - name: MAX_JOBS
+                          value: "64"
+                        - name: CMAKE_BUILD_PARALLEL_LEVEL
+                          value: "64"
+                        - name: JOB_ID
+                          value: job-large-queue
+                        - name: BUILDNUMBER
+                          value: "202403"
+                nodeSelector:
+                    kubernetes.io/arch: arm64
+                imagePullSecrets:
+                    - name: huawei-swr-image-pull-secret-model-gy
+                activeDeadlineSeconds: 14400
+                securityContext:
+                    runAsUser: 0
+                restartPolicy: Never
